@@ -1,0 +1,106 @@
+import pygame
+from math import pi, sin, cos, pow
+
+class SphereRenderer:
+    def __init__(self, position, radius, light_color, ambient_intensity, diffuse_intensity, specular_intensity,
+                 specular_power):
+        self.position = position
+        self.radius = radius
+        self.light_position = pygame.Vector3(0, 0, 0)
+        self.light_color = light_color
+        self.ambient_intensity = ambient_intensity
+        self.diffuse_intensity = diffuse_intensity
+        self.specular_intensity = specular_intensity
+        self.specular_power = specular_power
+
+    def set_light_position(self, light_position):
+        self.light_position = light_position
+
+    def update_light_properties(self, light_color, ambient_intensity, diffuse_intensity, specular_intensity,
+                                specular_power):
+        self.light_color = light_color
+        self.ambient_intensity = ambient_intensity
+        self.diffuse_intensity = diffuse_intensity
+        self.specular_intensity = specular_intensity
+        self.specular_power = specular_power
+
+    def silver_texture(self):
+        self.update_light_properties(light_color=(192, 192, 192), ambient_intensity=0.19225, diffuse_intensity=0.50754,
+                                        specular_intensity=0.508273, specular_power=51)
+        
+    def wood_texture(self):
+        self.update_light_properties(light_color=(133, 94, 66), ambient_intensity=0.5, diffuse_intensity=0.64,
+                                        specular_intensity=0.5, specular_power=100)
+        
+    def brass_texture(self):
+        self.update_light_properties(light_color=(225, 193, 110), ambient_intensity=0.329412, diffuse_intensity=0.780392,
+                                        specular_intensity=0.992157, specular_power=10)
+        
+    def plastic_texture(self):
+        self.update_light_properties(light_color=(0, 255, 255), ambient_intensity=0.05, diffuse_intensity=0.4,
+                                        specular_intensity=	0.04, specular_power=32)
+
+    def draw(self, screen):
+        for i in range(0, 360, 1):
+            for j in range(0, 180, 1):
+                theta1 = i * pi / 180
+                theta2 = (i + 2) * pi / 180
+                phi1 = j * pi / 180
+                phi2 = (j + 2) * pi / 180
+
+                x1 = int(self.radius * sin(phi1) * cos(theta1) + self.position[0])
+                y1 = int(self.radius * sin(phi1) * sin(theta1) + self.position[1])
+                z1 = int(self.radius * cos(phi1) + self.position[2])
+
+                x2 = int(self.radius * sin(phi1) * cos(theta2) + self.position[0])
+                y2 = int(self.radius * sin(phi1) * sin(theta2) + self.position[1])
+                z2 = int(self.radius * cos(phi1) + self.position[2])
+
+                x3 = int(self.radius * sin(phi2) * cos(theta1) + self.position[0])
+                y3 = int(self.radius * sin(phi2) * sin(theta1) + self.position[1])
+                z3 = int(self.radius * cos(phi2) + self.position[2])
+
+                x4 = int(self.radius * sin(phi2) * cos(theta2) + self.position[0])
+                y4 = int(self.radius * sin(phi2) * sin(theta2) + self.position[1])
+                z4 = int(self.radius * cos(phi2) + self.position[2])
+
+                # Calculate the normal vector
+                normal = pygame.Vector3(x1 - self.position[0], y1 - self.position[1], z1 - self.position[2])
+
+                # Calculate the light direction
+                light_direction = pygame.Vector3(self.light_position[0] - x1, self.light_position[1] - y1, self.light_position[2] - z1)
+                light_direction.normalize_ip()
+
+                # Calculate the view direction
+                view_direction = pygame.Vector3(self.position[0] - x1, self.position[1] - y1, self.position[2] - z1)
+                view_direction.normalize_ip()
+
+                # Calculate the reflection direction
+                reflection_direction = normal.reflect(light_direction)
+                reflection_direction.normalize_ip()
+
+                # Calculate the ambient component
+                ambient = self.ambient_intensity
+
+                # Calculate the diffuse component
+                diffuse = max(normal.dot(light_direction), 0) * self.diffuse_intensity * 0.01
+
+                # Calculate the specular component
+                specular = pow(max(reflection_direction.dot(view_direction), 0), self.specular_power) * self.specular_intensity
+
+                # Calculate the final color
+                color = (
+                    min(int(self.light_color[0] * (ambient + diffuse + specular)), 255),
+                    min(int(self.light_color[1] * (ambient + diffuse + specular)), 255),
+                    min(int(self.light_color[2] * (ambient + diffuse + specular)), 255)
+                )
+
+                pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x4, y4), (x3, y3)])
+
+    @staticmethod
+    def __normalize(value: float) -> float:
+        if value > 1:
+            return 1
+        if value < 0:
+            return 0
+        return value
