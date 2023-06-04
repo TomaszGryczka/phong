@@ -33,7 +33,7 @@ sphere = SphereRenderer(sphere_position, 200, light_color, ambient_intensity, di
                         specular_intensity, specular_power)
 
 # set starting texture
-sphere.silver_texture()
+sphere.pearl_texture()
 
 running = True
 reload_file = False
@@ -53,13 +53,13 @@ while running:
             elif event.key == K_l:
                 reload_file = True
             elif event.key == K_1:
-                sphere.silver_texture()
-            elif event.key == K_2:
-                sphere.wood_texture()
-            elif event.key == K_3:
                 sphere.pearl_texture()
-            elif event.key == K_4:
+            elif event.key == K_2:
+                sphere.silver_texture()
+            elif event.key == K_3:
                 sphere.plastic_texture()
+            elif event.key == K_4:
+                sphere.wood_texture()
 
     if reload_file:
         light_color, ambient_intensity, diffuse_intensity, specular_intensity, specular_power = load_properties_from_ini()

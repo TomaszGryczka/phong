@@ -29,8 +29,8 @@ class SphereRenderer:
                                         specular_intensity=0.508273, specular_power=51)
         
     def wood_texture(self):
-        self.update_light_properties(light_color=(133, 94, 66), ambient_intensity=0.5, diffuse_intensity=0.64,
-                                        specular_intensity=0.3, specular_power=10)
+        self.update_light_properties(light_color=(133, 94, 66), ambient_intensity=0.5, diffuse_intensity=0.8,
+                                        specular_intensity=0.2, specular_power=10)
         
     def pearl_texture(self):
         self.update_light_properties(light_color=(226, 223, 210), ambient_intensity=0.25, diffuse_intensity=1.0,
