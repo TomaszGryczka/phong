@@ -30,11 +30,11 @@ class SphereRenderer:
         
     def wood_texture(self):
         self.update_light_properties(light_color=(133, 94, 66), ambient_intensity=0.5, diffuse_intensity=0.64,
-                                        specular_intensity=0.5, specular_power=100)
+                                        specular_intensity=0.3, specular_power=10)
         
-    def brass_texture(self):
-        self.update_light_properties(light_color=(225, 193, 110), ambient_intensity=0.329412, diffuse_intensity=0.780392,
-                                        specular_intensity=0.992157, specular_power=10)
+    def pearl_texture(self):
+        self.update_light_properties(light_color=(226, 223, 210), ambient_intensity=0.25, diffuse_intensity=1.0,
+                                        specular_intensity=0.296648, specular_power=11)
         
     def plastic_texture(self):
         self.update_light_properties(light_color=(0, 255, 255), ambient_intensity=0.05, diffuse_intensity=0.4,

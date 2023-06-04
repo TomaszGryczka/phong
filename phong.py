@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from sphererenderer import SphereRenderer
+from sphere_renderer import SphereRenderer
 import configparser
 
 pygame.init()
@@ -57,7 +57,7 @@ while running:
             elif event.key == K_2:
                 sphere.wood_texture()
             elif event.key == K_3:
-                sphere.brass_texture()
+                sphere.pearl_texture()
             elif event.key == K_4:
                 sphere.plastic_texture()
 
