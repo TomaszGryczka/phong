@@ -41,8 +41,8 @@ class SphereRenderer:
                                         specular_intensity=	0.04, specular_power=32)
 
     def draw(self, screen):
-        for i in range(0, 360, 1):
-            for j in range(0, 180, 1):
+        for i in range(360):
+            for j in range(180):
                 theta1 = i * pi / 180
                 theta2 = (i + 2) * pi / 180
                 phi1 = j * pi / 180
@@ -64,31 +64,32 @@ class SphereRenderer:
                 y4 = int(self.radius * sin(phi2) * sin(theta2) + self.position[1])
                 z4 = int(self.radius * cos(phi2) + self.position[2])
 
-                # Calculate the normal vector
+                # calculate normal vector
                 normal = pygame.Vector3(x1 - self.position[0], y1 - self.position[1], z1 - self.position[2])
+                normal.normalize_ip()
 
-                # Calculate the light direction
+                # calculate light direction
                 light_direction = pygame.Vector3(self.light_position[0] - x1, self.light_position[1] - y1, self.light_position[2] - z1)
                 light_direction.normalize_ip()
 
-                # Calculate the view direction
+                # calculate view direction
                 view_direction = pygame.Vector3(self.position[0] - x1, self.position[1] - y1, self.position[2] - z1)
                 view_direction.normalize_ip()
 
-                # Calculate the reflection direction
+                # calculate reflection direction
                 reflection_direction = normal.reflect(light_direction)
                 reflection_direction.normalize_ip()
 
-                # Calculate the ambient component
+                # calculate ambient component
                 ambient = self.ambient_intensity
 
-                # Calculate the diffuse component
-                diffuse = max(normal.dot(light_direction), 0) * self.diffuse_intensity * 0.01
+                # calculate diffuse component
+                diffuse = max(normal.dot(light_direction), 0) * self.diffuse_intensity
 
-                # Calculate the specular component
+                # calculate specular component
                 specular = pow(max(reflection_direction.dot(view_direction), 0), self.specular_power) * self.specular_intensity
 
-                # Calculate the final color
+                # calculate final color
                 color = (
                     min(int(self.light_color[0] * (ambient + diffuse + specular)), 255),
                     min(int(self.light_color[1] * (ambient + diffuse + specular)), 255),
@@ -96,11 +97,3 @@ class SphereRenderer:
                 )
 
                 pygame.draw.polygon(screen, color, [(x1, y1), (x2, y2), (x4, y4), (x3, y3)])
-
-    @staticmethod
-    def __normalize(value: float) -> float:
-        if value > 1:
-            return 1
-        if value < 0:
-            return 0
-        return value

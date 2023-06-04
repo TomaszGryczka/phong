@@ -3,41 +3,38 @@ from pygame.locals import *
 from sphererenderer import SphereRenderer
 import configparser
 
-# Initialize Pygame
 pygame.init()
 
-# Define the screen dimensions
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 
-# Define colors
-WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-# Load properties from the INI file
 def load_properties_from_ini():
     config = configparser.ConfigParser()
     config.read('config.ini')
 
-    light_color = tuple(map(int, config.get('Light', 'color').split(',')))
-    ambient_intensity = config.getfloat('Light', 'k_a')
-    diffuse_intensity = config.getfloat('Light', 'k_d')
-    specular_intensity = config.getfloat('Light', 'k_s')
-    specular_power = config.getint('Light', 'n')
+    light_color = tuple(map(int, config.get('LIGHT', 'color').split(',')))
+    ambient_intensity = config.getfloat('LIGHT', 'k_a')
+    diffuse_intensity = config.getfloat('LIGHT', 'k_d')
+    specular_intensity = config.getfloat('LIGHT', 'k_s')
+    specular_power = config.getint('LIGHT', 'n')
 
     return light_color, ambient_intensity, diffuse_intensity, specular_intensity, specular_power
 
 light_color, ambient_intensity, diffuse_intensity, specular_intensity, specular_power = load_properties_from_ini()
 
-# Define light properties
-light_position = pygame.Vector3(width // 2 - 400, height // 2 - 300, -500)  # Updated light position as a Vector3
+# define starting position of source of light
+light_position = pygame.Vector3(width // 2 - 400, height // 2 - 300, -600)
 
-# Create an instance of the SphereRenderer class
-sphere = SphereRenderer((width // 2, height // 2, 0), 200, light_color, ambient_intensity, diffuse_intensity,
+sphere_position = (width // 2, height // 2, 0)
+sphere = SphereRenderer(sphere_position, 200, light_color, ambient_intensity, diffuse_intensity,
                         specular_intensity, specular_power)
 
-# Main game loop
+# set starting texture
+sphere.silver_texture()
+
 running = True
 reload_file = False
 while running:
@@ -69,18 +66,11 @@ while running:
         sphere.update_light_properties(light_color, ambient_intensity, diffuse_intensity, specular_intensity, specular_power)
         reload_file = False
 
-    # Clear the screen
     screen.fill(BLACK)
-
-    # Set the updated light position in the SphereRenderer instance
     sphere.set_light_position(light_position)
-
-    # Draw the sphere
     sphere.draw(screen)
 
-    # Update the screen
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(60)
 
-# Quit the program
 pygame.quit()
